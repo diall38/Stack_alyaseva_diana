@@ -191,6 +191,7 @@ class Stack : public Vector<T>
 {
 public:
 	Stack() :Vector() {}       //конструктор по умолчанию
+
 	Stack(size_t n) :Vector(n) {}
 	T top() { return data[size - 1]; }
 	bool empty() const { return (!size); }
