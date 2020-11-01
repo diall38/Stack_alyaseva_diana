@@ -20,15 +20,11 @@ public:
 	T& operator[](int pos) {
 		if (pos<0 || pos>size - 1)
 			throw "incorrect index";
-		else
-			if (size) return data[pos];
-			else
-				throw "empty vector";
+		else return data[pos];
 	}
 	T operator[](int pos) const {
 		if (pos<0 || pos>size - 1) throw "incorrect index";
-		else if (size) return data[pos];
-		else throw "empty vector";
+		else return data[pos];
 	}
 	void insert(T elem, int index);
 	void erase(int index);
@@ -111,17 +107,19 @@ inline void Vector<T>::pop_back() {
 		resize(1.3 * size--);
 	}
 	else {
-		T* tmp = new T[--capacity];
+		--size;
+		/*T* tmp = new T[--capacity];
 		--size;
 		for (size_t i = 0; i < size; i++)
 			tmp[i] = data[i];
 		delete[]data;
-		data = tmp;
+		data = tmp;*/
 	}
 }
 template <class T>
 inline void Vector<T>::push_front(T elem) {
-	if (capacity >= 2 * size)
+	insert(elem);
+	/*if (capacity >= 2 * size)
 		resize(1.3 * size);
 	if (size + 1 > capacity) {
 		if (capacity > 3)
@@ -137,11 +135,12 @@ inline void Vector<T>::push_front(T elem) {
 		for (int i = size - 1; i > 0; i--)
 			data[i] = data[i - 1];
 		data[0] = elem;
-	}
+	}*/
 }
 template <class T>
 inline void Vector<T>::pop_front() {
-	if (size == 0) throw "empty";
+	erase(0);
+	/*if (size == 0) throw "empty";
 	if (capacity >= 2 * size)
 		resize(1.3 * size);
 	T* tmp = new T[capacity - 1];
@@ -150,13 +149,19 @@ inline void Vector<T>::pop_front() {
 	delete[]data;
 	data = tmp;
 	size--;
-	capacity--;
+	capacity--;*/
 }
 template <class T>
 inline void Vector<T>::erase(int index) {
 	if (size - 1 < index || index < 0) throw "incorrect index";
 	if (!size) throw "empty";
-	T* tmp = new T[capacity - 1];
+	if (capacity >= 2 * size)
+		resize(1.3 * size);
+	for (size_t i = index + 1; i < size; i++)
+		data[i - 1] = data[i];
+	size--;
+	
+	/*T* tmp = new T[capacity - 1];
 	for (size_t i = 0; i < index; i++)
 		tmp[i] = data[i];
 	for (size_t i = index + 1; i < size; i++)
@@ -164,26 +169,19 @@ inline void Vector<T>::erase(int index) {
 	delete[]data;
 	data = tmp;
 	size--;
-	capacity--;
+	capacity--;*/
 }
 template <class T>
 inline void Vector<T>::insert(T elem, int index) {
 	if (size < index || index < 0) throw "incorrect index";
 	if (capacity >= 2 * size)
 		resize(1.3 * size);
-	if (size + 1 > capacity) {
+	if (size + 1 > capacity)
 		resize(1.3 * capacity);
-		size++;
-		for (size_t i = size - 1; i > index; i--)
-			data[i] = data[i - 1];
-		data[index] = elem;
-	}
-	else {
-		size++;
-		for (size_t i = size - 1; i > index; i--)
-			data[i] = data[i - 1];
-		data[index] = elem;
-	}
+	size++;
+	for (size_t i = size - 1; i > index; i--)
+		data[i] = data[i - 1];
+	data[index] = elem;
 }
 
 template <class T = int>
