@@ -65,3 +65,65 @@ TEST(Stack, can_push_value)
 	EXPECT_EQ(4, st.size);
 	EXPECT_EQ(4, st[st.size - 1]);
 }
+
+
+TEST(Queue, can_create_queue_with_positive_length)
+{
+	ASSERT_NO_THROW(Queue<int> q(3));
+}
+TEST(Queue, cant_create_queue_with_negative_length)
+{
+	ASSERT_ANY_THROW(Queue<> q(-3));
+}
+TEST(Queue, can_get_size)
+{
+	Queue<> q(3);
+	for (int i = 0; i < 3; i++) {
+		q.size++;
+		q[i] = i + 1;
+	}
+	EXPECT_EQ(3, q.Size());
+}
+TEST(Queue, can_pop_value)
+{
+	Queue<> q(5);
+	for (int i = 0; i < 5; i++) {
+		q.size++;
+		q[i] = i;
+	}
+	q.pop();
+	EXPECT_EQ(4, q.size);
+	EXPECT_EQ(1, q.front());
+	EXPECT_EQ(4, q.back());
+}
+TEST(Queue, can_push_value_size_less_than_capacity)
+{
+	Queue<> q(5);
+	for (int i = 0; i < 5; i++) {
+		q.size++;
+		q[i] = i;
+	}
+	q.pop();
+	q.pop(); //front==2 back==4
+	q.push(10); 
+	EXPECT_EQ(4, q.size);
+	EXPECT_EQ(10, q.back());
+	EXPECT_EQ(2, q.front());
+}
+TEST(Queue, can_push_value_size_equal_with_capacity)
+{
+	Queue<> q(5);
+	for (int i = 0; i < 5; i++) {
+		q.size++;
+		q[i] = i;
+	}
+	q.pop();
+	q.pop(); //front==2 back==4
+	q.push(10);//back==0
+	q.push(9);//back==1
+	q.push(8);//back==6
+	//10 9 2 3 4 + 8 -> 2 3 4 10 9 8
+	EXPECT_EQ(6, q.size);
+	EXPECT_EQ(8, q.back());
+	EXPECT_EQ(2, q.front());
+}

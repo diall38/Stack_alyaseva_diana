@@ -118,7 +118,7 @@ inline void Vector<T>::pop_back() {
 }
 template <class T>
 inline void Vector<T>::push_front(T elem) {
-	insert(elem);
+	insert(elem,0);
 	/*if (capacity >= 2 * size)
 		resize(1.3 * size);
 	if (size + 1 > capacity) {
@@ -198,3 +198,60 @@ public:
 	void pop() { Vector<T>::pop_back(); }
 	size_t Size() { return size; }
 };
+
+
+template <class T = int>
+class Queue : public Vector<T>
+{
+protected:
+	size_t pfront;
+	size_t pback;
+public:
+	Queue() :Vector() {
+		pfront = 0;
+		pback = 0
+	}     
+	Queue(size_t n) :Vector(n) {
+		pfront = 0; 
+		pback = n - 1;
+	}
+	T front() { return data[pfront]; }
+	T back() { return data[pback]; }
+	bool empty() const { return (!size); }
+	bool full() const { return size == capacity; }
+	void push(const T Val);
+	void pop();
+	size_t Size() { return size; }
+};
+
+template <class T>
+inline void Queue<T>::push(T elem) {
+	if (full()) {   //если очередь переполнена , то делаем resize
+		if (capacity > 3)
+			resize(1.3 * capacity);
+		else resize(1.9 * capacity);
+		if (pfront) {                                  //если front не 0, то сдвигаем front в 0,
+			T* tmp = new T[capacity];                 //чтобы не перезаписывать элементы в случае если back==front-1
+			for (size_t i = 0; i < size - pfront; i++) //иначе сработает data[++back] = elem;
+				tmp[i] = data[i + pfront];
+			for (size_t i = size - pfront; i < size; i++)
+				tmp[i] = data[i + pfront-size];
+			delete[] data;
+			data = tmp;
+			pfront = 0;
+		}
+	}
+	if (pback == capacity-1) {
+		pback = 0;
+		data[pback] = elem;
+	} else data[++pback] = elem;
+	size++;
+}
+template <class T>
+inline void Queue<T>::pop() {
+	if (empty()) throw "empty";
+	if (pfront == capacity - 1) {
+		pfront = 0;
+	} else pfront++;
+	size--;
+}
