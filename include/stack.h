@@ -90,12 +90,12 @@ inline void Vector<T>::resize(size_t capacity_s) {
 }
 template <class T>
 inline void Vector<T>::push_back(T elem) {
-	if (capacity >= 2 * size)
+	if (capacity >= 2 * size && capacity>7)
 		resize(1.3 * size);
 	if (size + 1 > capacity) {
 		if (capacity > 3)
 			resize(1.3 * capacity);
-		else resize(1.9 * capacity);
+		else resize(2 + capacity);
 		data[++size - 1] = elem;
 	}
 	else data[++size - 1] = elem;
@@ -108,76 +108,35 @@ inline void Vector<T>::pop_back() {
 	}
 	else {
 		--size;
-		/*T* tmp = new T[--capacity];
-		--size;
-		for (size_t i = 0; i < size; i++)
-			tmp[i] = data[i];
-		delete[]data;
-		data = tmp;*/
 	}
 }
 template <class T>
 inline void Vector<T>::push_front(T elem) {
 	insert(elem,0);
-	/*if (capacity >= 2 * size)
-		resize(1.3 * size);
-	if (size + 1 > capacity) {
-		if (capacity > 3)
-			resize(1.3 * capacity);
-		else resize(1.9 * capacity);
-		++size;
-		for (int i = size - 1; i > 0; i--)
-			data[i] = data[i - 1];
-		data[0] = elem;
-	}
-	else {
-		++size;
-		for (int i = size - 1; i > 0; i--)
-			data[i] = data[i - 1];
-		data[0] = elem;
-	}*/
 }
 template <class T>
 inline void Vector<T>::pop_front() {
 	erase(0);
-	/*if (size == 0) throw "empty";
-	if (capacity >= 2 * size)
-		resize(1.3 * size);
-	T* tmp = new T[capacity - 1];
-	for (size_t i = 0; i < size; i++)
-		tmp[i] = data[i + 1];
-	delete[]data;
-	data = tmp;
-	size--;
-	capacity--;*/
 }
 template <class T>
 inline void Vector<T>::erase(int index) {
 	if (size - 1 < index || index < 0) throw "incorrect index";
 	if (!size) throw "empty";
-	if (capacity >= 2 * size)
+	if (capacity >= 2 * size && capacity>7)
 		resize(1.3 * size);
 	for (size_t i = index + 1; i < size; i++)
 		data[i - 1] = data[i];
 	size--;
-	
-	/*T* tmp = new T[capacity - 1];
-	for (size_t i = 0; i < index; i++)
-		tmp[i] = data[i];
-	for (size_t i = index + 1; i < size; i++)
-		tmp[i - 1] = data[i];
-	delete[]data;
-	data = tmp;
-	size--;
-	capacity--;*/
 }
 template <class T>
 inline void Vector<T>::insert(T elem, int index) {
 	if (size < index || index < 0) throw "incorrect index";
-	if (capacity >= 2 * size)
+	if (capacity >= 2 * size && capacity>7)
 		resize(1.3 * size);
 	if (size + 1 > capacity)
-		resize(1.3 * capacity);
+		if (capacity > 3)
+			resize(1.3 * capacity);
+		else resize(2 + capacity);
 	size++;
 	for (size_t i = size - 1; i > index; i--)
 		data[i] = data[i - 1];
@@ -229,7 +188,7 @@ inline void Queue<T>::push(T elem) {
 	if (full()) {   //если очередь переполнена , то делаем resize
 		if (capacity > 3)
 			resize(1.3 * capacity);
-		else resize(1.9 * capacity);
+		else resize(2 + capacity);
 		if (pfront) {                                  //если front не 0, то сдвигаем front в 0,
 			T* tmp = new T[capacity];                 //чтобы не перезаписывать элементы в случае если back==front-1
 			for (size_t i = 0; i < size - pfront; i++) //иначе сработает data[++back] = elem;
