@@ -90,7 +90,7 @@ inline void Vector<T>::resize(size_t capacity_s) {
 }
 template <class T>
 inline void Vector<T>::push_back(T elem) {
-	if (capacity >= 2 * size && capacity>7)
+	if (capacity >= 2 * size && capacity>7 && size)
 		resize(1.3 * size);
 	if (size + 1 > capacity) {
 		if (capacity > 3)
@@ -214,3 +214,37 @@ inline void Queue<T>::pop() {
 	} else pfront++;
 	size--;
 }
+
+
+
+template <class T = int>
+class QueueTS : public Stack<T>
+{
+protected:
+	Stack<T> st1;
+	Stack<T> st2;
+public:
+	QueueTS() {}
+	T front() { return st1.data[0]; }
+	T back() { return st1.top(); }
+	bool empty() const { return (!st1.size); }
+	bool full() const { return st1.size == st1.capacity; }
+	void push(const T Val) { st1.push(Val); };
+	void pop();
+	size_t Size() { return st1.size; }
+};
+
+template <class T>
+inline void QueueTS<T>::pop() {
+	if (st1.empty()) throw "empty";
+	for (size_t i = 0; i < st1.Size(); i++) {
+		st2.push(st1.top());
+		st1.pop();
+	}
+	st2.pop();
+	for (size_t i = 0; i < st2.Size(); i++) {
+		st1.push(st2.top());
+		st2.pop();
+	}
+}
+	

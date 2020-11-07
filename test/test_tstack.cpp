@@ -127,3 +127,28 @@ TEST(Queue, can_push_value_size_equal_with_capacity)
 	EXPECT_EQ(8, q.back());
 	EXPECT_EQ(2, q.front());
 }
+TEST(QueueTS, can_create_queue_on_two_stacks)
+{
+	ASSERT_NO_THROW(QueueTS<> q);
+}
+TEST(QueueTS, can_push_elem)
+{
+	QueueTS<> q;
+	ASSERT_NO_THROW(q.push(1));
+	EXPECT_EQ(1, q.Size());
+}
+TEST(QueueTS, can_get_size)
+{
+	QueueTS<> q;
+	for (int i = 0; i < 3; i++) 
+		q.push(i);
+	EXPECT_EQ(3, q.Size());
+}
+TEST(QueueTS, can_pop_elem)
+{
+	QueueTS<> q;
+	for (int i = 0; i < 3; i++)
+		q.push(i);
+	ASSERT_NO_THROW(q.pop());
+	EXPECT_EQ(2, q.Size());
+}
