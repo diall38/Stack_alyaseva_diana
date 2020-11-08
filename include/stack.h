@@ -185,13 +185,13 @@ public:
 
 template <class T>
 inline void Queue<T>::push(T elem) {
-	if (full()) {   //если очередь переполнена , то делаем resize
+	if (full()) {   
 		if (capacity > 3)
 			resize(1.3 * capacity);
 		else resize(2 + capacity);
-		if (pfront) {                                  //если front не 0, то сдвигаем front в 0,
-			T* tmp = new T[capacity];                 //чтобы не перезаписывать элементы в случае если back==front-1
-			for (size_t i = 0; i < size - pfront; i++) //иначе сработает data[++back] = elem;
+		if (pfront) {                                 
+			T* tmp = new T[capacity];                 
+			for (size_t i = 0; i < size - pfront; i++) 
 				tmp[i] = data[i + pfront];
 			for (size_t i = size - pfront; i < size; i++)
 				tmp[i] = data[i + pfront-size];
@@ -225,26 +225,30 @@ protected:
 	Stack<T> st2;
 public:
 	QueueTS() {}
-	T front() { return st1.data[0]; }
-	T back() { return st1.top(); }
-	bool empty() const { return (!st1.size); }
-	bool full() const { return st1.size == st1.capacity; }
+	T front() {
+		if (st2.empty()) return st1.data[0];
+		else return st2.top();
+	}
+	T back() { 
+		if (st1.empty()) return st2.data[0];
+		else return st1.top();
+	}
+	bool empty() const { return st1.empty() && st2.empty(); }
+	bool full() const { return st1.full(); }
 	void push(const T Val) { st1.push(Val); };
 	void pop();
-	size_t Size() { return st1.size; }
+	size_t Size() { return st1.Size() + st2.Size(); }
 };
 
 template <class T>
 inline void QueueTS<T>::pop() {
-	if (st1.empty()) throw "empty";
-	for (size_t i = 0; i < st1.Size(); i++) {
-		st2.push(st1.top());
-		st1.pop();
+	if (st1.empty() && st2.empty()) throw "empty";
+	if (st2.empty()) {
+		for (size_t i = 0; i < st1.Size(); i++) {
+			st2.push(st1.top());
+			st1.pop();
+		}
 	}
 	st2.pop();
-	for (size_t i = 0; i < st2.Size(); i++) {
-		st1.push(st2.top());
-		st2.pop();
-	}
 }
 	
